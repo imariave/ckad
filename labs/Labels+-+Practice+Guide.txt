@@ -1,0 +1,98 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Labels | Kubernetes                                                                    *
+*                                                                                                                                *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/                       * 
+* https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#using-labels-effectively
+* https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#updating-labels   *
+* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#label                   *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Demo:
+-------------
+We will add Labels to Pods, then perform various operations which include add, overwriting, removing
+labels,
+
+***************************************************************************************************
+
+
+1. Pod with "Labels"
+~~~~~~~~~~~~~~~~~~~~
+
+# pod-labels.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: label-demo
+  labels:                      # This is the label section
+    app: nginx-app             # Adding label app=nginx-app
+    environment: production    # Adding label environment=production
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:1.18
+    ports:
+    - containerPort: 80 
+
+Deploy:
+-------
+kubectl apply -f pod-labels.yaml
+
+***************************************************************************************************
+
+
+2. Display ALL pod labels:
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl get pods --show-labels   //display pod labels 
+
+
+***************************************************************************************************
+
+
+
+3. Display pods with only CERTAIN labels:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl get pods –l key1,key2
+
+
+***************************************************************************************************
+
+
+4. ADD Pod Labels:
+~~~~~~~~~~~~~~~~~~
+kubectl label pods [pod-name] [key]=[value]
+
+kubectl run redis --image=redis
+kubectl label pods redis tier=backend
+
+***************************************************************************************************
+
+
+
+5. OVERWRITE Pod Labels:
+~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl label pods [pod-name] [key]=[value] --overwrite
+
+kubectl label pods redis tier=frontend --overwrite
+
+***************************************************************************************************
+
+
+
+6. REMOVE pod Label:
+~~~~~~~~~~~~~~~~~~~~
+kubectl label pods [pod-name] key-
+
+
+***************************************************************************************************
+
+NEXT: Selectors. Labels are nothing without Selectors. 
+
+***************************************************************************************************
+
+
+

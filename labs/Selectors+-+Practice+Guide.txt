@@ -1,0 +1,105 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Selectors (and Labels)                                                                 *
+*                                                                                                 *
+*                                                         *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *  
+* https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/                       *
+* https://medium.com/@ngugijoan/understanding-labels-selectors-and-annotations-in-kubernetes-3c01ac943bb1                                                                                   
+* https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/                       * 
+* https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#using-labels-effectively
+* https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#updating-labels   *
+* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#label                   *
+*                                                                                                 *
+***************************************************************************************************
+
+===================================================================================================
+
+1. Deploy sample Pod with labels assigned to it:
+------------------------------------------------
+
+kubectl run frontend-demo --image=nginx --labels="tier=frontend,env=prod,app=nginx"
+
+kubectl run backend-demo --image=redis --labels="tier=backend,app=redis"
+
+
+===================================================================================================
+
+
+2. Using "Selectors" in object "YAML" file
+------------------------------------------
+
+In Services, Replication Controllers:
+-------------------------------------
+...
+  selector:
+    app: demo
+    env: staging
+
+
+In ReplicaSet, Deployments, DaemonSet, Jobs YAML file 
+----------------------------------------------------
+
+...
+  selector:
+    matchLabels
+      app: demo
+    matchExpressions:
+      - {key: env, operator: in, values: [test, prod]}
+    
+
+Pod YAML
+--------
+...
+  nodeSelector:
+    disk: ssd
+    
+
+kubectl get pod –-selector [KEY]=[VALUE]
+(OR)
+kubectl get pod –l [KEY]=[VALUE]
+
+
+===================================================================================================
+
+3. Using "Selectors" from "Command" line
+
+
+a) key=value
+------------
+kubectl get pod –-selector [KEY]=[VALUE]
+(or)
+kubectl get pod –l [KEY]=[VALUE]
+
+
+b) Key!=value
+-------------
+kubectl get pod –l '[KEY]!=[VALUE]'
+
+
+c) key in (value1, value2)
+--------------------------
+kubectl get pod –l '[KEY] in (VALUE1, VALUE2)'
+
+
+d) key notin (value1, value2)
+---------------------------
+kubectl get pod –l '[KEY] notin [VALUE, VALUE2]'
+
+
+e) key
+------
+kubectl get pods –l [KEY]
+
+
+f)!key
+------
+kubectl get pod –l ‘![KEY]’
+
+
+===================================================================================================
+
+
+

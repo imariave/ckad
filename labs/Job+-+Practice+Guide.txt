@@ -1,0 +1,100 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Job | Kubernetes                                                                       *
+*                                                                                                                                  *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/workloads/controllers/job/                                  *
+* https://kubernetes.io/docs/tasks/job/coarse-parallel-processing-work-queue/#defining-a-job      *
+* https://kubernetes.io/docs/tasks/job/coarse-parallel-processing-work-queue/#defining-a-job      *
+* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-job-em-             *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Demo:
+-------------
+We will deploy sample Job that will caluculate the value of "pi" upto 2000 decimal.
+This Job is configured to create five Pods. It will create two Pods parallely, calculate the Pi value. Then comes the next set of two Pods, which caluculates the same.
+
+***************************************************************************************************
+
+
+1. Creating Job Declaratively (Using YAML)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# pi-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi-job
+spec:
+  completions: 5
+  parallelism: 2 
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl
+        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never
+  
+
+***************************************************************************************************
+
+2. Creating Job Imperatively (From Command line):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl create job [JOB-NAME] --image=[IMAGE-NAME]
+
+
+Dry-run and output to yaml:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl create job [JOB-NAME] --image=[IMAGE-NAME] --dry-run=client -o yaml
+
+
+***************************************************************************************************
+
+
+3. Displaying Job & Pods:
+~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl get job [JOB-NAME]
+kubectl get job [JOB-NAME] -o yaml
+
+kubectl describe job [JOB-NAME]
+
+kubectl get pods
+
+***************************************************************************************************
+
+
+3. Validating Job Pods:
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl get pods
+
+kubectl logs [POD-NAME]
+
+
+***************************************************************************************************
+
+
+
+4. Running operations directly on the YAML file:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl [OPERATION] –f [FILE-NAME.yaml]
+
+kubectl get –f [FILE-NAME.yaml]
+kubectl delete –f [FILE-NAME.yaml]
+kubectl get -f [FILE-NAME.yaml]
+kubectl create -f [FILE-NAME.yaml]
+
+
+***************************************************************************************************
+
+5. Deleting Job:
+~~~~~~~~~~~~~~~~
+kubectl delete job [JOB-NAME]
+kubectl get pods
+
+
+***************************************************************************************************

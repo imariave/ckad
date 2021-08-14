@@ -1,0 +1,103 @@
+***************************************************************************************************
+*                                                                                                 *
+* Subject: CronJob | Kubernetes                                                                   *
+*                                                                                                 *
+*                                                           *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/                            *
+* https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cronjob                    *
+* https://cloud.google.com/kubernetes-engine/docs/how-to/cronjobs                                 *
+* https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/                            *
+* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-cronjob-em-         *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Demo:
+-------------
+We will create a sample CronJob to print hello message, every minute. 
+This CronJob creates the Job object in the background every minute, which creates the Pod and which prints the hello statement every minutes and completes the Job.
+
+***************************************************************************************************
+
+
+1. Creating CronJob Declaratively (Using YAML)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# hello-cron.yaml
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hello-cron
+spec:
+  schedule: "*/1 * * * *"
+  startingDeadlineSeconds: 30
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the K8s cluster
+          restartPolicy: OnFailure
+
+  
+
+***************************************************************************************************
+
+
+2. Creating CronJob Imperatively (From Command line)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl create cronjob [JOB-NAME] --image=[IMAGE-NAME]  --schedule="* * * * *"
+
+
+Dry-run and output to yaml:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl create cronjob [JOB-NAME] --image=[IMAGE-NAME]  --schedule="* * * * *" --dry-run=client -o yaml
+
+
+***************************************************************************************************
+
+
+3. Displaying CronJob:
+~~~~~~~~~~~~~~~~~~~~~~
+kubectl get cronjob [JOB-NAME]
+kubectl get cronjob [JOB-NAME] -o yaml
+
+kubectl describe cronjob [JOB-NAME]
+
+
+***************************************************************************************************
+
+
+4. Validating Job and Pods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl get jobs
+kubectl get pods
+kubectl logs [POD-NAME]
+
+***************************************************************************************************
+
+
+5. Running operations directly on the YAML file:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kubectl [OPERATION] –f [FILE-NAME.yaml]
+kubectl get –f [FILE-NAME.yaml]
+kubectl delete –f [FILE-NAME.yaml]
+kubectl get -f [FILE-NAME.yaml]
+kubectl create -f [FILE-NAME.yaml]
+
+
+***************************************************************************************************
+
+6. Deleting Job:
+~~~~~~~~~~~~~~~~
+kubectl delete cronjob [JOB-NAME]
+
+
+***************************************************************************************************

@@ -1,0 +1,131 @@
+
+***************************************************************************************************
+*                                                                                                 *
+* Subject: Sidecar Container | Kubernetes                                                         *
+*                                                                                                 *
+*                                                         *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/workloads/pods/#how-pods-manage-multiple-containers         *
+* https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/#example-1-sidecar-containers
+* https://kubernetes.io/docs/concepts/cluster-administration/logging/#sidecar-container-with-logging-agent
+*                                                                                                 *
+***************************************************************************************************
+
+In this demo:
+------------
+a. We will test the purpose of "Sidecar" Multi-Container design pattern.
+b. First, we will test "without" Sidecar Multi-Container and then with it.
+
+
+***************************************************************************************************
+
+
+WITHOUT Sidecar Container:
+--------------------------
+
+# no-sidecar-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-sidecar-pod
+spec:
+  containers:
+  - name: count
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - >
+      i=0;
+      while true;
+      do
+        echo "$i: $(date)" >> /var/log/1.log;
+        echo "$(date) INFO $i" >> /var/log/2.log;
+        i=$((i+1));
+        sleep 1;
+      done      
+    volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+  volumes:
+  - name: varlog
+    emptyDir: {}
+
+
+----------------------------------------------------
+
+kubectl apply -f no-sidecar-pod.yaml
+
+kubectl get pods
+
+kubectl logs no-sidecar-pod
+kubectl logs no-sidecar-pod count
+
+kubectl exec no-sidecar-pod -- cat /var/log/1.log | tail
+kubectl exec no-sidecar-pod -- cat /var/log/2.log | tail
+
+
+***************************************************************************************************
+
+WITH Sidecar Container:
+-----------------------
+
+#sidecar-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-pod
+spec:
+  containers:
+  - name: count
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - >
+      i=0;
+      while true;
+      do
+        echo "$i: $(date)" >> /var/log/1.log;
+        echo "$(date) INFO $i" >> /var/log/2.log;
+        i=$((i+1));
+        sleep 1;
+      done      
+    volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+  - name: count-log-1
+    image: busybox
+    args: [/bin/sh, -c, 'tail -n+1 -f /var/log/1.log']
+    volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+  - name: count-log-2
+    image: busybox
+    args: [/bin/sh, -c, 'tail -n+1 -f /var/log/2.log']
+    volumeMounts:
+    - name: varlog
+      mountPath: /var/log
+  volumes:
+  - name: varlog
+    emptyDir: {}
+
+
+kubectl apply -f sidecar-pod.yaml
+
+kubectl get pods
+
+kubectl logs sidecar-pod count-log-1
+kubectl logs sidecar-pod count-log-2
+
+kubectl logs -f sidecar-pod count-log-1
+kubectl logs -f sidecar-pod count-log-2
+
+kubectl logs sidecar-pod count-log-1 | tail
+kubectl logs sidecar-pod count-log-2 | tail
+
+
+***************************************************************************************************
+

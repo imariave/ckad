@@ -1,0 +1,80 @@
+***************************************************************************************************
+*                                                                                                 *
+* Exercise: CronJob                                                                               *
+*                                                                                                 *
+*                                                        *
+*                                                                                                 *
+* Reference:                                                                                      *
+* ----------                                                                                      *
+* https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/                            *
+* https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cronjob                    *
+* https://cloud.google.com/kubernetes-engine/docs/how-to/cronjobs                                 *
+* https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/                            *
+* https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-cronjob-em-         *
+*                                                                                                 *
+***************************************************************************************************
+
+In this Exercise:
+-----------------
+You will create a sample CronJob that will print hello message, every minute. 
+This CronJob creates the Job object in the background every minute, which creates the Pod and which prints the hello statement every minutes and completes the Job.
+
+NOTE: 
+-----
+a. To successfully finish this exercise, It is important to go through CronJob Concept and Demo videos in this series.
+b. You can refer to Kuberenetes Docs for help when needed.
+
+
+***************************************************************************************************
+
+
+STEP-1: Create ConrJob:
+-----------------------
+Create a CronJob which prints below message every second.
+
+CronJob Name: hello-cron
+Print Message: "Hello from K8s Cluster"
+Schedule: Every Minute
+
+  
+
+***************************************************************************************************
+
+
+STEP-2: Display Job:
+--------------------
+a. Display "hello-cron" CronJob
+b. Display "hello-cron" and route the output to YAML format
+
+c. Display complete CronJob details using "...describe cronjob..." command
+
+d. Display Job created by this CronJob
+
+e. Display Pods created by this CronJob
+
+
+***************************************************************************************************
+
+STEP-3: Display CronJob Logs:
+-------------------------
+
+a. Display logs of "pi-job" and ensure Pod displays "Hello from K8s Cluster" every minute and completes it Jobs successfully
+
+
+***************************************************************************************************
+
+STEP-4: Delete the CronJob
+--------------------------
+
+a. Delete the CronJob.
+
+b. Ensure "hello-cron" CronJob is deleted
+b. Ensure related Job is deleted
+c. Ensure related Pods are deleted.
+
+
+***************************************************************************************************
+
+
+
+
